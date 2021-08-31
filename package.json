@@ -1,6 +1,6 @@
 {
-  "name": "mapbox-gl-draw-scale-rotate-mode",
-  "version": "0.1.0",
+  "name": "@ispeco/mapbox-gl-draw-scale-rotate-mode",
+  "version": "0.1.1",
   "description": "A custom mode for MapboxGL Draw to scale and rotate features",
   "main": "dist/index.js",
   "module": "src/index.js",
@@ -10,7 +10,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ReyhaneMasumi/mapbox-gl-draw-scale-rotate-mode.git"
+    "url": "git+https://github.com/SuperMap/mapbox-gl-draw-scale-rotate-mode.git"
   },
   "keywords": [
     "mapbox",
@@ -18,12 +18,10 @@
     "mapbox-gl-draw",
     "geojson"
   ],
-  "author": "Reyhane Masumi",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/ReyhaneMasumi/mapbox-gl-draw-scale-rotate-mode/issues"
+  "author": {
+    "name": "SuperMap_FV"
   },
-  "homepage": "https://github.com/ReyhaneMasumi/mapbox-gl-draw-scale-rotate-mode#readme",
+  "license": "MIT",
   "files": [
     "dist",
     "src"

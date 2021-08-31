@@ -1,0 +1,1 @@
+declare module '@ispeco/mapbox-gl-draw-scale-rotate-mode';

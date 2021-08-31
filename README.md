@@ -1,33 +1,24 @@
-[![NPM](https://img.shields.io/npm/v/mapbox-gl-draw-scale-rotate-mode.svg)](https://www.npmjs.com/package/mapbox-gl-draw-scale-rotate-mode)
-![Develop](https://github.com/reyhanemasumi/mapbox-gl-draw-scale-rotate-mode/workflows/Develop/badge.svg)
-![Release](https://github.com/reyhanemasumi/mapbox-gl-draw-scale-rotate-mode/workflows/Release/badge.svg)
-
 # mapbox-gl-draw-scale-rotate-mode
 
 A custom mode for [MapboxGL-Draw](https://github.com/mapbox/mapbox-gl-draw) to cut polygons
 
-## [DEMO](https://reyhanemasumi.github.io/mapbox-gl-draw-scale-rotate-mode/)
+## [DEMO](https://github.com/SuperMap/mapbox-gl-draw-scale-rotate-mode/)
 
 ![A Gif showing demo usage](demo/public/demo.gif)
 
 ## Install
 
 ```bash
-npm install mapbox-gl-draw-scale-rotate-mode
+npm install @ispeco/mapbox-gl-draw-scale-rotate-mode
 ```
 
-or use CDN:
-
-```html
-<script src="https://unpkg.com/mapbox-gl-draw-scale-rotate-mode"></script>
-```
 
 ## Usage
 
 ```js
 import mapboxGl from 'mapbox-gl';
 import MapboxDraw from '@mapbox/mapbox-gl-draw';
-import { SRMode, SRCenter, SRStyle } from 'mapbox-gl-draw-scale-rotate-mode';
+import { SRMode, SRCenter, SRStyle } from '@ispeco/mapbox-gl-draw-scale-rotate-mode';
 
 const map = new mapboxgl.Map({
   container: 'map', // container id
@@ -62,11 +53,11 @@ draw.changeMode('scaleRotateMode', {
 });
 ```
 
-## [Example](https://github.com/ReyhaneMasumi/mapbox-gl-draw-scale-rotate-mode/blob/main/demo/src/App.js)
+## [Example](https://github.com/SuperMap/mapbox-gl-draw-scale-rotate-mode/blob/main/demo/src/App.js)
 
 ## Acknowledgement
 
-This project is heavily inspired from [TxRectMode mapbox-gl-draw custom mode](https://github.com/drykovanov/mapbox-gl-draw-rotate-scale-rect-mode).
+This project is heavily inspired from [mapbox-gl-draw custom mode](https://github.com/SuperMap/mapbox-gl-draw-rotate-scale-rect-mode).
 
 ## License
 

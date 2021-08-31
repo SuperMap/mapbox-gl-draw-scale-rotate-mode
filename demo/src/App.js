@@ -2,7 +2,7 @@ import React, { useRef, useEffect } from 'react';
 import mapboxGl from 'mapbox-gl';
 import MapboxDraw from '@mapbox/mapbox-gl-draw';
 import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css';
-import { SRMode, SRCenter, SRStyle } from 'mapbox-gl-draw-scale-rotate-mode';
+import { SRMode, SRCenter,SRStyle} from '@ispeco/mapbox-gl-draw-scale-rotate-mode';
 import './App.css';
 
 let map;
@@ -66,7 +66,33 @@ function App() {
   useEffect(() => {
     map = new mapboxGl.Map({
       container: mapRef.current || '',
-      style: `https://map.ir/vector/styles/main/mapir-xyz-light-style.json`,
+      style: {
+        "version": 8,
+        "name": "Map.ir Vector XYZ Light",
+        "metadata": {},
+        "center": [
+          51.393,
+          35.6879
+        ],
+        "zoom": 10,
+        "bearing": 0,
+        "pitch": 0,
+        "sources": {},
+        "layers": [
+          {
+            "id": "background",
+            "type": "background",
+            "paint": {
+              "background-color":"#000000"
+            }
+          }],
+        "created": "2018-11-24T10:00:57.017Z",
+        "id": "cjovab1r7apq22sl8xzlw5du3",
+        "modified": "2020-07-06",
+        "owner": "Map.ir",
+        "visibility": "private",
+        "draft": false
+      },
       center: [51.3857, 35.6102],
       zoom: 10,
       pitch: 0,
@@ -103,6 +129,7 @@ function App() {
         },
       ],
     });
+    window.map = map;
     map.once('load', () => {
       map.resize();
       map.addControl(drawBar, 'top-right');
@@ -117,12 +144,12 @@ function App() {
               type: 'Polygon',
               coordinates: [
                 [
-                  [51.41742415918904, 35.73019558439101],
-                  [51.31319413385742, 35.702773908694724],
-                  [51.378997493472525, 35.665562843119986],
-                  [51.45008537540798, 35.67776544979942],
-                  [51.46619566741822, 35.70822028156377],
-                  [51.41742415918904, 35.73019558439101],
+                    [51.47578902735333, 35.67273449809075],
+                    [51.37155900202171, 35.64531282239446],
+                    [51.437362361636815, 35.60810175681972],
+                    [51.50845024357227, 35.62030436349916],
+                    [51.52456053558251, 35.650759195263504],
+                    [51.47578902735333, 35.67273449809075]
                 ],
               ],
             },
@@ -134,14 +161,23 @@ function App() {
             geometry: {
               type: 'LineString',
               coordinates: [
-                [51.46717071533203, 35.752642192392955],
-                [51.41704559326172, 35.7715862712587],
-                [51.37207031249999, 35.73954585450408],
-                [51.31988525390625, 35.753756674845675],
-                [51.29344940185547, 35.713904233681035],
-                [51.37035369873047, 35.67012719291238],
-                [51.32434844970703, 35.633581468816594],
+                  [51.369667053222855, 35.7342289330811],
+                  [51.31954193115254, 35.75317301194684],
+                  [51.27456665039082, 35.72113259519222],
+                  [51.222381591797074, 35.73534341553382],
+                  [51.19594573974629, 35.69549097436918],
+                  [51.27285003662129, 35.651713933600526],
+                  [51.226844787597855, 35.61516820950474],
               ],
+            },
+          },
+          {
+            id: 'example3_id',
+            type: 'Feature',
+            properties: {},
+            geometry: {
+              type: 'Point',
+              coordinates: [51.5, 35.752642192392955],
             },
           },
         ],
