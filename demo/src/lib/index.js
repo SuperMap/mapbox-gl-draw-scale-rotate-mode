@@ -224,14 +224,14 @@ export const SRStyle = [
     }
   },
   {
-    id: 'gl-draw-polygon-or-line-rotate-point-icon',
+    id: 'gl-draw-point-scale-rotate-mode-rotate-icon',
     type: 'symbol',
     filter: [
       'all',
       ['==', 'meta', 'midpoint'],
       ['==', 'icon', 'rotate'],
       ['==', '$type', 'Point'],
-      ['!=', 'mode', 'static']
+      ['==', 'mode', 'rotate']
     ],
     layout: {
       'icon-image': 'rotate',
@@ -249,7 +249,7 @@ export const SRStyle = [
     }
   },
   {
-    id: 'gl-draw-point-vertex-scale-icon',
+    id: 'gl-draw-point-scale-rotate-mode-scale-icon',
     type: 'symbol',
     filter: [
       'all',
@@ -274,7 +274,7 @@ export const SRStyle = [
     }
   },
   {
-    id: 'gl-draw-line-scale-line',
+    id: 'gl-draw-line-scale-rotate-mode-scale-line',
     type: 'line',
     filter: ['all',['==', 'meta', 'feature'], ['==', 'mode', 'scale'], ['==', '$type', 'LineString']],
     layout: {
@@ -287,6 +287,43 @@ export const SRStyle = [
       'line-width': 2
     }
   },
+  {
+    id: 'gl-draw-point-scale-rotate-mode-active',
+    type: 'circle',
+    filter: ['all', ['==', 'active', 'true'], ['==', 'mode', 'scaleRotateMode']],
+    paint: {
+      'circle-radius': 4,
+      'circle-color': '#fff',
+      'circle-stroke-color':themeColor,
+      'circle-stroke-width':1,
+    }
+  },
+  {
+    id: 'gl-draw-line-scale-rotate-mode-active',
+    type: 'line',
+    filter: ['all', ['==', '$type', 'LineString'], ['==', 'active', 'true'], ['==', 'mode', 'scaleRotateMode']],
+    layout: {
+      'line-cap': 'round',
+      'line-join': 'round'
+    },
+    paint: {
+      'line-color': themeColor,
+      'line-width': 2
+    }
+  },
+  {
+    id: 'gl-draw-polygon-scale-rotate-mode-active',
+    type: 'line',
+    filter: ['all', ['==', '$type', 'Polygon'], ['==', 'active', 'true'], ['==', 'mode', 'scaleRotateMode']],
+    layout: {
+      'line-cap': 'round',
+      'line-join': 'round'
+    },
+    paint: {
+      'line-color': themeColor,
+      'line-width': 2
+    }
+  }
 ];
 
 function parseSRCenter(value, defaultSRCenter = SRCenter.Center) {
@@ -554,6 +591,7 @@ SRMode._createRotationPoint = function (
       lat: cR1[1],
       coord_path: v1.properties ? v1.properties.coord_path : '0.0',
       heading: heading,
+      mode:'rotate'
     },
     geometry: {
       type: Constants.geojsonTypes.POINT,
