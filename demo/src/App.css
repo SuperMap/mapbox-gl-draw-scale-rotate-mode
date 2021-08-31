@@ -1,4 +1,4 @@
-@import url('https://api.mapbox.com/mapbox-gl-js/v1.12.0/mapbox-gl.css');
+@import url('./mapbox-gl.css');
 
 h1,
 p {
