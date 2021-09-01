@@ -334,7 +334,7 @@ function parseSRCenter(value, defaultSRCenter = SRCenter.Center) {
   if (value == 'center') return SRCenter.Center;
 
   if (value == 'opposite') return SRCenter.Opposite;
-  
+
   return SRCenter.Center;
   // throw Error('Invalid SRCenter: ' + value);
 }
@@ -356,30 +356,6 @@ SRMode.onSetup = function (opts) {
   const featureId = this.getSelected()[0].id;
 
   const feature = this.getFeature(featureId);
-
-  if (!feature) {
-      this.changeMode(Constants.modes.SIMPLE_SELECT);
-    // throw new Error('You must provide a valid featureId to enter SRMode');
-    return;
-  }
-
-  if (
-    feature.type === Constants.geojsonTypes.POINT ||
-    feature.type === Constants.geojsonTypes.MULTI_POINT
-  ) {
-      this.changeMode(Constants.modes.SIMPLE_SELECT);
-    // throw new TypeError('SRMode can not handle points');
-    return;
-  }
-    if (
-      feature.coordinates === undefined ||
-      feature.coordinates.length != 1 ||
-      feature.coordinates[0].length <= 2
-    ) {
-      this.changeMode(Constants.modes.SIMPLE_SELECT);
-     // throw new TypeError('SRMode can only handle polygons');
-       return;
-    }
 
   const state = {
     featureId,
@@ -407,10 +383,31 @@ SRMode.onSetup = function (opts) {
     selectedCoordPaths: opts.coordPath ? [opts.coordPath] : [],
     rectangleWidgetsPreRoated: [], // 用于记录旋转之前要素坐标状态
     rectWidgets: []
-  };
+  }
+  if (!feature) {
+    state.unSuport = true;
+    // throw new Error('You must provide a valid featureId to enter SRMode');
+    return state;
+  }
+
+  if (
+    feature.type === Constants.geojsonTypes.POINT ||
+    feature.type === Constants.geojsonTypes.MULTI_POINT
+  ) {
+    state.unSuport = true;
+    // throw new Error('SRMode can not handle points');
+    return state;
+  }
+  if (
+    feature.coordinates === undefined) {
+    state.unSuport = true;
+    return state;
+  }
 
   if (!(state.canRotate || state.canScale)) {
-    console.warn('Non of canScale or canRotate is true');
+    // console.warn('Non of canScale or canRotate is true');
+    state.unSuport = true;
+    return state
   }
 
   this.setSelectedCoordinates(
@@ -448,46 +445,57 @@ SRMode._getRectWidgets = function (state, geojson) {
   }
   return SRMode.createRectWidgets(state, geojson)
 };
-// render
-SRMode.toDisplayFeatures = function (state, geojson, push) {
-  if (state.featureId === geojson.properties.id) {
-    geojson.properties.active = Constants.activeStates.ACTIVE;
-    push(geojson);
 
-    // 获取矩形工具
-    const rectWidgets = SRMode._getRectWidgets(state, geojson)
+SRMode.displaySelectedFeatures = function (state, geojson, push){
+  geojson.properties.active = Constants.activeStates.ACTIVE;
+  push(geojson);
 
-    if (state.canScale) {
-      if (!state.rectWidgets.length) {
-        state.rectWidgets = rectWidgets
-      }
+  // 获取矩形工具
+  const rectWidgets = SRMode._getRectWidgets(state, geojson)
 
-      // 矩形框的线
-      const rectLineGeojson = SRMode.rectWidgetsToLineGeojson(rectWidgets, state.featureId, "fv-scale-line");
-      push(rectLineGeojson);
-      // 矩形框的顶点
-      rectWidgets.forEach(push);
+  if (state.canScale) {
+    if (!state.rectWidgets.length) {
+      state.rectWidgets = rectWidgets
     }
 
-    if (state.canRotate) {
-      const featureGeojson = SRMode.rectWidgetsToGeojson(rectWidgets);
-      const featureId = geojson.properties && geojson.properties.id;
-      var rotPoints = this.createRotationPoints(state, featureGeojson, rectWidgets, featureId);
-      rotPoints.forEach(push);
-    }
-  } else {
-    geojson.properties.active = Constants.activeStates.INACTIVE;
-    push(geojson);
+    // 矩形框的线
+    const rectLineGeojson = SRMode.rectWidgetsToLineGeojson(rectWidgets, state.featureId, "fv-scale-line");
+    push(rectLineGeojson);
+    // 矩形框的顶点
+    rectWidgets.forEach(push);
   }
 
-  // this.fireActionable(state);
-  this.setActionableState({
-    combineFeatures: false,
-    uncombineFeatures: false,
-    trash: state.canTrash,
-  });
+  if (state.canRotate) {
+    const featureGeojson = SRMode.rectWidgetsToGeojson(rectWidgets);
+    const featureId = geojson.properties && geojson.properties.id;
+    var rotPoints = this.createRotationPoints(state, featureGeojson, rectWidgets, featureId);
+    rotPoints.forEach(push);
+  }
+}
 
-  // this.fireUpdate();
+// render
+SRMode.toDisplayFeatures = function (state, geojson, push) {
+  // 不支持的情况
+  if (state.unSuport) {
+    if (state.canSelectFeatures) {
+      let opts = state.featureId !== undefined ? {
+        featureIds: [state.featureId],
+      } : undefined
+      this.changeMode(Constants.modes.SIMPLE_SELECT, opts);
+    }
+    geojson.properties.mode = Constants.modes.SIMPLE_SELECT;
+    push(geojson);
+    return;
+  }
+
+  // 支持的情况
+  if (state.featureId === geojson.properties.id) {
+    SRMode.displaySelectedFeatures(state, geojson, push)
+    return;
+  }
+
+  geojson.properties.active = Constants.activeStates.INACTIVE;
+  push(geojson);
 };
 SRMode.rectWidgetsToGeojson = function (rectWidgets) {
   const rectFeatures = JSON.parse(JSON.stringify(rectWidgets))
@@ -931,10 +939,10 @@ SRMode.onDrag = function (state, e) {
   if (state.txMode) {
     switch (state.txMode) {
       case TxMode.Rotate:
-        this.dragRotatePoint(state, e, delta);
+        this.dragRotatePoint(state, e);
         break;
       case TxMode.Scale:
-        this.dragScalePoint(state, e, delta);
+        this.dragScalePoint(state, e);
         break;
         case TxMode.Move:
           this.dragFeature(state, e, delta);
@@ -996,7 +1004,7 @@ SRMode.computeScale=function(state, e){
   return scale
 }
 
-SRMode.dragScalePoint = function (state, e, delta) {
+SRMode.dragScalePoint = function (state, e) {
   if (state.scaling === undefined || state.scaling == null) {
     // throw new Error('state.scaling required');
     return;
