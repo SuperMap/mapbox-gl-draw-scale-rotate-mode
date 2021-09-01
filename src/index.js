@@ -334,8 +334,9 @@ function parseSRCenter(value, defaultSRCenter = SRCenter.Center) {
   if (value == 'center') return SRCenter.Center;
 
   if (value == 'opposite') return SRCenter.Opposite;
-
-  throw Error('Invalid SRCenter: ' + value);
+  
+  return SRCenter.Center;
+  // throw Error('Invalid SRCenter: ' + value);
 }
 
 /*
@@ -357,22 +358,28 @@ SRMode.onSetup = function (opts) {
   const feature = this.getFeature(featureId);
 
   if (!feature) {
-    throw new Error('You must provide a valid featureId to enter SRMode');
+      this.changeMode(Constants.modes.SIMPLE_SELECT);
+    // throw new Error('You must provide a valid featureId to enter SRMode');
+    return;
   }
 
   if (
     feature.type === Constants.geojsonTypes.POINT ||
     feature.type === Constants.geojsonTypes.MULTI_POINT
   ) {
-    throw new TypeError('SRMode can not handle points');
+      this.changeMode(Constants.modes.SIMPLE_SELECT);
+    // throw new TypeError('SRMode can not handle points');
+    return;
   }
-  //   if (
-  //     feature.coordinates === undefined ||
-  //     feature.coordinates.length != 1 ||
-  //     feature.coordinates[0].length <= 2
-  //   ) {
-  //     throw new TypeError('SRMode can only handle polygons');
-  //   }
+    if (
+      feature.coordinates === undefined ||
+      feature.coordinates.length != 1 ||
+      feature.coordinates[0].length <= 2
+    ) {
+      this.changeMode(Constants.modes.SIMPLE_SELECT);
+     // throw new TypeError('SRMode can only handle polygons');
+       return;
+    }
 
   const state = {
     featureId,
@@ -393,7 +400,6 @@ SRMode.onSetup = function (opts) {
 
     canSelectFeatures:
       opts.canSelectFeatures != undefined ? opts.canSelectFeatures : true,
-    // selectedFeatureMode: opts.selectedFeatureMode != undefined ? opts.selectedFeatureMode : 'simple_select',
 
     dragMoveLocation: opts.startPos || null,
     dragMoving: false,
@@ -529,36 +535,6 @@ SRMode.pathsToCoordinates = function (featureId, paths) {
   });
 };
 
-// SRMode.computeBisectrix = function (points) {
-//   for (var i1 = 0; i1 < points.length; i1++) {
-//     var i0 = (i1 - 1 + points.length) % points.length;
-//     var i2 = (i1 + 1) % points.length;
-
-//     var l1 = lineString([
-//       points[i0].geometry.coordinates,
-//       points[i1].geometry.coordinates,
-//     ]);
-//     var l2 = lineString([
-//       points[i1].geometry.coordinates,
-//       points[i2].geometry.coordinates,
-//     ]);
-//     var a1 = bearing(
-//       points[i0].geometry.coordinates,
-//       points[i1].geometry.coordinates
-//     );
-//     var a2 = bearing(
-//       points[i2].geometry.coordinates,
-//       points[i1].geometry.coordinates
-//     );
-
-//     var a = (a1 + a2) / 2.0;
-
-//     if (a < 0.0) a += 360;
-//     if (a > 360) a -= 360;
-
-//     points[i1].properties.heading = a;
-//   }
-// };
 
 SRMode.computeDistance = function (cR0, rotCenter, radiusScale) {
   var heading = bearing(rotCenter, cR0);
@@ -602,7 +578,7 @@ SRMode._createRotationPoint = function (
 
 // 创建旋转工具按钮
 SRMode.createRotationPoints = function (state, geojson, suppPoints,featureId) {
-  const { type, coordinates } = geojson.geometry;
+  const { type } = geojson.geometry;
 
   let rotationWidgets = [];
   if (
@@ -735,7 +711,6 @@ SRMode._createRectWidgets = function ( featureId, suppPoints) {
       type: Constants.geojsonTypes.FEATURE,
       properties: {
         meta: Constants.meta.VERTEX,
-        // ['meta:type']: Constants.geojsonTypes.POINT,
         parent: featureId,
         coord_path: `0.${i}`,
         icon: 'scale',
@@ -970,12 +945,12 @@ SRMode.onDrag = function (state, e) {
   state.dragMoveLocation = e.lngLat;
 };
 
-SRMode.dragRotatePoint = function (state, e, delta) {
+SRMode.dragRotatePoint = function (state, e) {
   if (state.rotation === undefined || state.rotation == null) {
-    throw new Error('state.rotation required');
+    // throw new Error('state.rotation required');
+    return;
   }
 
-  var polygon = state.feature.toGeoJSON();
   var m1 = point([e.lngLat.lng, e.lngLat.lat]);
 
   const n = state.rotation.centers.length;
@@ -991,7 +966,6 @@ SRMode.dragRotatePoint = function (state, e, delta) {
   if (CommonSelectors.isShiftDown(e)) {
     rotateAngle = 5.0 * Math.round(rotateAngle / 5.0);
   }
-  console.log(rotateAngle)
   var rotatedFeature = transformRotate(state.rotation.feature0, rotateAngle, {
     pivot: center,
     mutate: false,
@@ -1024,7 +998,8 @@ SRMode.computeScale=function(state, e){
 
 SRMode.dragScalePoint = function (state, e, delta) {
   if (state.scaling === undefined || state.scaling == null) {
-    throw new Error('state.scaling required');
+    // throw new Error('state.scaling required');
+    return;
   }
 
   var cIdx = this.coordinateIndex(state.selectedCoordPaths);
@@ -1101,5 +1076,4 @@ SRMode.clickInactive = function (state, e) {
 
 SRMode.onTrash = function () {
   this.deleteFeature(this.getSelectedIds());
-  // this.fireActionable();
 };
