@@ -335,7 +335,7 @@ function parseSRCenter(value, defaultSRCenter = SRCenter.Center) {
 
   if (value == 'opposite') return SRCenter.Opposite;
 
-  return SRCenter.Center;
+  return defaultSRCenter;
   // throw Error('Invalid SRCenter: ' + value);
 }
 
