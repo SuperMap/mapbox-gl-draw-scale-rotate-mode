@@ -459,7 +459,7 @@ SRMode.displaySelectedFeatures = function (state, geojson, push){
     }
 
     // 矩形框的线
-    const rectLineGeojson = SRMode.rectWidgetsToLineGeojson(rectWidgets, state.featureId, "fv-scale-line");
+    const rectLineGeojson = SRMode.rectWidgetsToLineGeojson(rectWidgets, state.featureId);
     push(rectLineGeojson);
     // 矩形框的顶点
     rectWidgets.forEach(push);
@@ -502,7 +502,6 @@ SRMode.rectWidgetsToGeojson = function (rectWidgets) {
   const PointCoordinatesArr = rectFeatures.map(gs => gs.geometry.coordinates)
   const featureGeojson = {
     type: Constants.geojsonTypes.FEATURE,
-    id: 'rectWL',
     properties: {},
     geometry: {
       type: Constants.geojsonTypes.LINE_STRING,
@@ -517,7 +516,7 @@ SRMode.rectWidgetsToLineGeojson = function (rectWidgets, parentId) {
   PointCoordinatesArr.push(PointCoordinatesArr[0])
   const featureGeojson = {
     type: Constants.geojsonTypes.FEATURE,
-    id: 'fv-scale-line',
+    id: 'scale-rotate-mode-scale-line',
     properties: {
       meta: Constants.meta.FEATURE,
       parent: parentId,
@@ -559,7 +558,7 @@ SRMode._createRotationPoint = function (
   rotCenter,
   radiusScale
 ) {
-  var cR0 = midpoint(v1, v2).geometry.coordinates;// TODO修改中心点为矩形上边中心点
+  var cR0 = midpoint(v1, v2).geometry.coordinates;
   var heading = bearing(rotCenter, cR0);
   var distance0 = distance(rotCenter, cR0);
   var distance1 = radiusScale * distance0; // TODO depends on map scale
@@ -573,7 +572,7 @@ SRMode._createRotationPoint = function (
       parent: featureId,
       lng: cR1[0],
       lat: cR1[1],
-      coord_path: v1.properties ? v1.properties.coord_path : '0.0',
+      coord_path: v1.properties ? v1.properties.coord_path : '0.0', // TODO v1.properties.coord_path 还有用么？
       heading: heading,
       mode:'rotate'
     },
@@ -694,14 +693,7 @@ SRMode.createRectWidgets = function (state, geojson) {
   return this._createRectWidgets(featureId, suppPoints);
 };
 
-// 检查feature的类型是否为点要素
-// SRMode.isPoint = function (type) {
-//   if (type === Constants.geojsonTypes.POINT || type === Constants.geojsonTypes.MULTI_POINT) {
-//     return true;
-//   }
-//   return false;
-// }
-
+// 创建外接矩形框的四个顶点
 SRMode._createRectWidgets = function ( featureId, suppPoints) {
   const featuresCollection = {
     type: 'FeatureCollection',
@@ -944,9 +936,9 @@ SRMode.onDrag = function (state, e) {
       case TxMode.Scale:
         this.dragScalePoint(state, e);
         break;
-        case TxMode.Move:
-          this.dragFeature(state, e, delta);
-          break;
+      case TxMode.Move:
+        this.dragFeature(state, e, delta);
+        break;
     }
   }
 
