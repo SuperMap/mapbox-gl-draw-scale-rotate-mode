@@ -974,7 +974,7 @@ SRMode.dragRotatePoint = function (state, e) {
   state.rectWidgets = this.getRoatedRect(state, center, rotateAngle)
   state.feature.incomingCoords(rotatedFeature.geometry.coordinates);
   // TODO add option for this:
-  this.fireUpdate();
+  // this.fireUpdate();
 };
 
 SRMode.computeScale=function(state, e){
@@ -1017,7 +1017,7 @@ SRMode.dragScalePoint = function (state, e) {
   state.rectWidgets = this.getScaledRect(state, scale, cCenter)
   state.feature.incomingCoords(scaledFeature.geometry.coordinates);
   // TODO add option for this:
-  this.fireUpdate();
+  // this.fireUpdate();
 };
 
 SRMode.dragFeature = function (state, e, delta) {
@@ -1025,7 +1025,7 @@ SRMode.dragFeature = function (state, e, delta) {
   state.rectWidgets = this.getMovedRect(state, e);
   state.dragMoveLocation = e.lngLat;
   // TODO add option for this:
-  this.fireUpdate();
+  // this.fireUpdate();
 };
 
 SRMode.fireUpdate = function () {
@@ -1043,9 +1043,9 @@ SRMode.onMouseOut = function (state) {
 };
 
 SRMode.onTouchEnd = SRMode.onMouseUp = function (state) {
-  if (state.dragMoving) {
+  // if (state.dragMoving) {
     this.fireUpdate();
-  }
+  // }
   this.stopDragging(state);
 };
 

@@ -130,6 +130,7 @@ function App() {
       ],
     });
     window.map = map;
+    window.mapdraw = draw;
     map.once('load', () => {
       map.resize();
       map.addControl(drawBar, 'top-right');
@@ -183,6 +184,21 @@ function App() {
         ],
       });
     });
+
+
+    map.on('draw.update', (e) => {
+      console.log("draw.update：", e)
+    });
+    map.on('draw.modechange', (e) => {
+      console.log("draw.modechange", e)
+    });
+    map.on('draw.create', (e) => {
+      console.log("draw.create：", e)
+    });
+    map.on('click', (e) => {
+      console.log("click map：", e)
+    });
+
   }, []);
 
   const scaleRotate = () => {
