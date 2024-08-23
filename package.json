@@ -1,6 +1,6 @@
 {
   "name": "@ispeco/mapbox-gl-draw-scale-rotate-mode",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "A custom mode for MapboxGL Draw to scale and rotate features",
   "main": "dist/index.js",
   "module": "src/index.js",

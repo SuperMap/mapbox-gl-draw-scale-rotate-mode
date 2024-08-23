@@ -353,9 +353,16 @@ function parseSRCenter(value, defaultSRCenter = SRCenter.Center) {
     }
  */
 SRMode.onSetup = function (opts) {
-  const featureId = this.getSelected()[0].id;
+  const selectfeature = this.getSelected()[0];
 
-  const feature = this.getFeature(featureId);
+  if (!selectfeature) {
+    // throw new Error('You must provide a valid featureId to enter SRMode');
+    return
+  }
+  
+  const featureId = selectfeature.id;
+
+  let feature = this.getFeature(featureId);
 
   const state = {
     featureId,
