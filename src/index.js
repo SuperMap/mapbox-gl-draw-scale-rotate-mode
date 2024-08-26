@@ -405,11 +405,11 @@ SRMode.onSetup = function (opts) {
     // throw new Error('SRMode can not handle points');
     return state;
   }
-  if (
-    feature.coordinates === undefined) {
-    state.unSuport = true;
-    return state;
-  }
+  // if (
+  //   feature.coordinates === undefined) {
+  //   state.unSuport = true;
+  //   return state;
+  // }
 
   if (!(state.canRotate || state.canScale)) {
     // console.warn('Non of canScale or canRotate is true');
